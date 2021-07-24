@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="https://maven.apache.org/POM/4.0.0"  
+         xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    
+  <parent>
+    <groupId>org.scijava</groupId>
+    <artifactId>pom-scijava</artifactId>
+    <version>12.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>remiberthoz</groupId>
+  <artifactId>imagej-timebar</artifactId>
+  <version>0.1.0</version>
+
+  <name>timebar</name>
+  <url>https://github.com/remiberthoz/imagej-timebar</url>
+  <description>An ImageJ plugin to insert progressing timebar in timelapses.</description>
+  <inceptionYear>2021</inceptionYear>
+  <organization>
+    <name>Rémi Berthoz</name>
+    <url>https://github.com/remiberthoz/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>GNU GENERAL PUBLIC LICENSE v3</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>remiberthoz</id>
+      <name>Rémi Berthoz</name>
+      <roles>
+        <!-- see https://imagej.net/Team -->
+        <role>founder</role>
+        <role>lead</role>
+        <role>developer</role>
+        <role>debugger</role>
+        <role>reviewer</role>
+        <role>support</role>
+        <role>maintainer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>None</name>
+    </contributor>
+  </contributors>
+  
+  <mailingLists>
+		<mailingList>
+			<name>Image.sc Forum</name>
+			<archive>https://forum.image.sc/</archive>
+		</mailingList>
+	</mailingLists>
+
+  <scm>
+    <connection>scm:git:git://github.com/remiberthoz/imagej-timebar</connection>
+    <developerConnection>scm:git:git@github.com/remiberthoz/imagej-timebar</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/remiberthoz/imagej-timebar</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/remiberthoz/imagej-timebar/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>None</system>
+  </ciManagement>
+
+  <properties>
+    <main-class>Timebar_</main-class>
+    <package-name>fiji.plugin.timebar</package-name>
+		<license.licenseName>GPL v3</license.licenseName>
+    <license.projectName>Timebar</license.projectName>
+    <license.copyrightOwners>Rémi Berthoz</license.copyrightOwners>
+    <releaseProfiles>deploy-to-imagej</releaseProfiles>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>imagej.public</id>
+      <url>https://maven.imagej.net/content/groups/public</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- ImageJ dependencies -->
+    <dependency>
+        <groupId>net.imagej</groupId>
+        <artifactId>imagej</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
