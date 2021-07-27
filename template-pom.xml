@@ -13,7 +13,7 @@
 
   <groupId>remiberthoz</groupId>
   <artifactId>imagej-timebar</artifactId>
-  <version>0.1.0</version>
+  <version>X.Y.Z</version> <!-- Updated from git-describe with build script -->
 
   <name>timebar</name>
   <url>https://github.com/remiberthoz/imagej-timebar</url>
