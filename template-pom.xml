@@ -11,8 +11,8 @@
     <relativePath/>
   </parent>
 
-  <groupId>remiberthoz</groupId>
-  <artifactId>imagej-timebar</artifactId>
+  <groupId>fr.remiberthoz</groupId>
+  <artifactId>Timebar_</artifactId>
   <version>X.Y.Z</version> <!-- Updated from git-describe with build script -->
 
   <name>timebar</name>
@@ -76,7 +76,7 @@
 
   <properties>
     <main-class>Timebar_</main-class>
-    <package-name>fiji.plugin.timebar</package-name>
+    <package-name>fr.remiberthoz.imagej.timebar</package-name>
 		<license.licenseName>GPL v3</license.licenseName>
     <license.projectName>Timebar</license.projectName>
     <license.copyrightOwners>Rémi Berthoz</license.copyrightOwners>
