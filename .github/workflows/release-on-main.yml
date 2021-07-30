@@ -25,3 +25,21 @@ jobs:
             target/*[^sources].jar
           draft: yes
           fail_on_unmatched_files: yes
+      - name: Release to ImageJ update site
+        env:
+          WIKI_USER: remiberthoz
+          UPDATE_PASS: this secret is stored in the _UPDATE_PASS environment variable
+          UPDATE_SITE: Timebar
+          IJ_PARENT_PATH: /
+          UPDATE_SITE_URL: https://sites.imagej.net/${{ env.UPDATE_SITE }}/
+          IJ_PATH: ${{ env.IJ_PARENT_PATH }}/Fiji.app
+          IJ_LAUNCHER: ${{ env.IJ_PATH }}/ImageJ-linux64
+          IJ_DOWNLOAD_URL: https://downloads.imagej.net/fiji/latest/fiji-linux64.tar.gz
+        run: |
+          curl -s ${IJ_DOWNLOAD_URL} | tar --directory ${IJ_PARENT_PATH} --extract --gzip
+          mvn -B install -Dscijava.app.directory=${IJ_PATH} -Ddelete.other.versions=true
+          echo ${IJ_PATH}
+          echo ${IJ_LAUNCHER}
+          ${IJ_LAUNCHER} --update edit-update-site ${UPDATE_SITE} ${UPDATE_SITE_URL} "webdav:${WIKI_USER}:${_UPDATE_PASS}" .
+          ${IJ_LAUNCHER} --update update-force
+          ${IJ_LAUNCHER} --update upload-complete-site --force-shadow ${UPDATE_SITE}
