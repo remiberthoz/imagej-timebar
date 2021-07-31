@@ -8,22 +8,38 @@ on:
 jobs:
   build_release:
     runs-on: ubuntu-latest
+    env:
+      IJ_DOWNLOAD_URL: https://downloads.imagej.net/fiji/latest/fiji-linux64.tar.gz
+      WIKI_USER: remiberthoz
+      UPDATE_PASS: this secret is stored in the _UPDATE_PASS environment variable
+      UPDATE_SITE: Timebar
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Java JDK 8
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '8'
-      - name: Set package name environment variable
-        run: echo "jar_filename=$(./build.sh name)" >> $GITHUB_ENV
-      - name: Build package
-        run: ./build.sh package
+      - name: Build PlugIn with Maven
+        run: mvn -B package
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            target/${{ env.jar_filename }}
+            target/*[^sources].jar
           draft: yes
           fail_on_unmatched_files: yes
+      - name: Install ImageJ/Fiji
+        run: curl --silent ${IJ_DOWNLOAD_URL} | tar --extract --gzip
+      - name: Install PlugIn in ImageJ/Fiji (with Maven)
+        run: mvn -B install -Dscijava.app.directory=./Fiji.app
+      - name: Release to ImageJ update site
+        env:
+          WIKI_USER: remiberthoz
+          UPDATE_PASS: this secret is stored in the _UPDATE_PASS environment variable
+          UPDATE_SITE: Timebar
+          IJ_PARENT_PATH: /
+          UPDATE_SITE_URL: https://sites.imagej.net/${{ env.UPDATE_SITE }}/
+          IJ_PATH: ${{ env.IJ_PARENT_PATH }}/Fiji.app
+          IJ_LAUNCHER: ${{ env.IJ_PATH }}/ImageJ-linux64
+          IJ_DOWNLOAD_URL: https://downloads.imagej.net/fiji/latest/fiji-linux64.tar.gz
+        run: |
+          ./Fiji.app/ImageJ-linux64 --headless --update edit-update-site ${UPDATE_SITE} https://sites.imagej.net/${UPDATE_SITE}/ "webdav:${WIKI_USER}:${_UPDATE_PASS}" .
+          ./Fiji.app/ImageJ-linux64 --headless --update update-force
+          ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force-shadow ${UPDATE_SITE}

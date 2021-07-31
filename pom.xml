@@ -7,13 +7,13 @@
   <parent>
     <groupId>org.scijava</groupId>
     <artifactId>pom-scijava</artifactId>
-    <version>12.0.0</version>
+    <version>30.0.0</version>
     <relativePath/>
   </parent>
 
-  <groupId>remiberthoz</groupId>
-  <artifactId>imagej-timebar</artifactId>
-  <version>X.Y.Z</version> <!-- Updated from git-describe with build script -->
+  <groupId>fr.remiberthoz</groupId>
+  <artifactId>Timebar_</artifactId>
+  <version>X.Y.Z</version> <!-- Updated from git-describe with jgitver -->
 
   <name>timebar</name>
   <url>https://github.com/remiberthoz/imagej-timebar</url>
@@ -76,7 +76,7 @@
 
   <properties>
     <main-class>Timebar_</main-class>
-    <package-name>fiji.plugin.timebar</package-name>
+    <package-name>fr.remiberthoz.imagej.timebar</package-name>
 		<license.licenseName>GPL v3</license.licenseName>
     <license.projectName>Timebar</license.projectName>
     <license.copyrightOwners>Rémi Berthoz</license.copyrightOwners>
@@ -85,8 +85,8 @@
 
   <repositories>
     <repository>
-      <id>imagej.public</id>
-      <url>https://maven.imagej.net/content/groups/public</url>
+			<id>scijava.public</id>
+			<url>https://maven.scijava.org/content/groups/public</url>
     </repository>
   </repositories>
 
@@ -94,7 +94,7 @@
     <!-- ImageJ dependencies -->
     <dependency>
         <groupId>net.imagej</groupId>
-        <artifactId>imagej</artifactId>
+        <artifactId>ij</artifactId>
     </dependency>
   </dependencies>
 
