@@ -39,11 +39,21 @@ public class Timebar_ implements PlugIn {
 
     // ImagePlus currently open in ImageJ, that we are working on.
     private ImagePlus imp;
-    private int imWidth, imHeight, imBitdepth, imFrames, imSlices, imChannels;  // ImagePlus dimensions (width, height, bit depth, frames, slices, channels).
-    private int currentFrame, currentSlice, currentChannel; // frame, slice and channel for the image currently shown in the GUI.
+    // ImagePlus dimensions (width, height, bit depth, frames, slices, channels).
+    private int imWidth;
+    private int imHeight;
+    private int imFrames;
+    private int imSlices;
+    private int imChannels;  
+    // Frame, slice and channel for the image currently shown in the GUI.
+    private int currentFrame;
+    private int currentSlice;
+    private int currentChannel;
 
-    private int xloc, yloc;
-    private int roiX=-1, roiY;
+    private int xloc;
+    private int yloc;
+    private int roiX=-1;
+    private int roiY;
 
     public void run(String arg) {
         getCurrentImage();
@@ -66,7 +76,6 @@ public class Timebar_ implements PlugIn {
         currentChannel = imp.getChannel();
         imWidth = imp.getWidth();
         imHeight = imp.getHeight();
-        imBitdepth = imp.getBitDepth();
         imFrames = imp.getNFrames();
         imSlices = imp.getNSlices();
         imChannels = imp.getNChannels();
