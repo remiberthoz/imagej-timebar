@@ -27,20 +27,11 @@ jobs:
           draft: yes
           fail_on_unmatched_files: yes
       - name: Install ImageJ/Fiji
-        run: curl --silent ${IJ_DOWNLOAD_URL} | tar --extract --gzip
-      - name: Install PlugIn in ImageJ/Fiji (with Maven)
-        run: mvn -B install -Dscijava.app.directory=./Fiji.app
-      - name: Release to ImageJ update site
-        env:
-          WIKI_USER: remiberthoz
-          UPDATE_PASS: this secret is stored in the _UPDATE_PASS environment variable
-          UPDATE_SITE: Timebar
-          IJ_PARENT_PATH: /
-          UPDATE_SITE_URL: https://sites.imagej.net/${{ env.UPDATE_SITE }}/
-          IJ_PATH: ${{ env.IJ_PARENT_PATH }}/Fiji.app
-          IJ_LAUNCHER: ${{ env.IJ_PATH }}/ImageJ-linux64
-          IJ_DOWNLOAD_URL: https://downloads.imagej.net/fiji/latest/fiji-linux64.tar.gz
         run: |
+          curl --silent ${IJ_DOWNLOAD_URL} | tar --extract --gzip
           ./Fiji.app/ImageJ-linux64 --headless --update edit-update-site ${UPDATE_SITE} https://sites.imagej.net/${UPDATE_SITE}/ "webdav:${WIKI_USER}:${_UPDATE_PASS}" .
-          ./Fiji.app/ImageJ-linux64 --headless --update update-force
-          ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force-shadow ${UPDATE_SITE}
+      - name: Install PlugIn in ImageJ/Fiji (with Maven)
+        run: mvn -B install -Dscijava.app.directory=./Fiji.app -Ddelete.other.versions=true -Dscijava.ignoreDependencies=true
+      - name: Release to ImageJ update site
+        run: |
+          ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force ${UPDATE_SITE}
