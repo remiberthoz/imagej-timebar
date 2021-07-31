@@ -17,22 +17,22 @@
 public class TimebarConfiguration {
     
     // Define lists of choices in the menu.
-    public static final String[] TIME_FORMATS = {"D-HH:mm:ss.SSS", "D-HH:mm:ss", "D-HH:mm", "HH:mm:ss.SSS", "HH:mm:ss", "HH:mm", "mm:ss.SSS", "mm:ss", "ss.SSS"};
-    public static final String[] LOCATIONS = {"Upper Right", "Lower Right", "Lower Left", "Upper Left", "At Selection"};
-    public static final int UPPER_RIGHT=0, LOWER_RIGHT=1, LOWER_LEFT=2, UPPER_LEFT=3, AT_SELECTION=4;
-    public static final String[] FCOLORS = {"White","Black","Light Gray","Gray","Dark Gray","Red","Green","Blue","Yellow"};
-    public static final String[] BCOLORS = {"None","Black","White","Dark Gray","Gray","Light Gray","Yellow","Blue","Green","Red"};
+    protected static final String[] TIME_FORMATS = {"D-HH:mm:ss.SSS", "D-HH:mm:ss", "D-HH:mm", "HH:mm:ss.SSS", "HH:mm:ss", "HH:mm", "mm:ss.SSS", "mm:ss", "ss.SSS"};
+    protected static final String[] LOCATIONS = {"Upper Right", "Lower Right", "Lower Left", "Upper Left", "At Selection"};
+    protected static final int UPPER_RIGHT=0, LOWER_RIGHT=1, LOWER_LEFT=2, UPPER_LEFT=3, AT_SELECTION=4;
+    protected static final String[] FCOLORS = {"White","Black","Light Gray","Gray","Dark Gray","Red","Green","Blue","Yellow"};
+    protected static final String[] BCOLORS = {"None","Black","White","Dark Gray","Gray","Light Gray","Yellow","Blue","Green","Red"};
 
-    public int barHeightInPixels;
-    public String timeFormat;
-    public String location;
-    public String fcolor;
-    public String bcolor;
-    public boolean boldText;
-    public boolean serifFont;
-    public boolean hideBar;
-    public boolean showUnits;
-    public int fontSize;
+    protected int barHeightInPixels;
+    protected String timeFormat;
+    protected String location;
+    protected String fcolor;
+    protected String bcolor;
+    protected boolean boldText;
+    protected boolean serifFont;
+    protected boolean hideBar;
+    protected boolean showUnits;
+    protected int fontSize;
 
     public TimebarConfiguration() {
         this.barHeightInPixels = 14;

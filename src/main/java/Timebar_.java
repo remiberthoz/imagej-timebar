@@ -34,7 +34,7 @@ public class Timebar_ implements PlugIn {
     private static final TimebarConfiguration sConfiguration = new TimebarConfiguration();
     private TimebarConfiguration configuration = new TimebarConfiguration(sConfiguration);
 
-    private final static String TIME_BAR = "|TIME_BAR|";
+    private static final String TIME_BAR = "|TIME_BAR|";
     private int labelWidthInPixels;
 
     // ImagePlus currently open in ImageJ, that we are working on.
@@ -162,12 +162,12 @@ public class Timebar_ implements PlugIn {
         String sS = formatterS.format(time);
         String sm = formatterm.format(time);
 
-        String DATE_SEPARATOR = "-";
-        String TIME_SEPARATOR = ":";
-        String UNITS_D = configuration.showUnits ? "d" : DATE_SEPARATOR;
-        String UNITS_H = configuration.showUnits ? "h" : TIME_SEPARATOR;
-        String UNITS_M = configuration.showUnits ? "m" : TIME_SEPARATOR;
-        String UNITS_S = configuration.showUnits ? "s" : TIME_SEPARATOR;
+        final String DATE_SEPARATOR = "-";
+        final String TIME_SEPARATOR = ":";
+        final String UNITS_D = configuration.showUnits ? "d" : DATE_SEPARATOR;
+        final String UNITS_H = configuration.showUnits ? "h" : TIME_SEPARATOR;
+        final String UNITS_M = configuration.showUnits ? "m" : TIME_SEPARATOR;
+        final String UNITS_S = configuration.showUnits ? "s" : TIME_SEPARATOR;
 
         String timeFormatted = "";
         switch(configuration.timeFormat) {

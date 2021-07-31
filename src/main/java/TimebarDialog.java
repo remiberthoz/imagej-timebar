@@ -22,10 +22,10 @@ import java.awt.event.TextEvent;
 
 public class TimebarDialog extends GenericDialog {
 
-    public static final String[] CHECKBOX_LABELS = {"Bold Text", "Hide Bar", "Serif Font", "Show units"};
+    private static final String[] CHECKBOX_LABELS = {"Bold Text", "Hide Bar", "Serif Font", "Show units"};
 
-    TimebarConfiguration configuration;
-    TimebarDialogOnUpdateCallback onUpdateCallback;
+    private TimebarConfiguration configuration;
+    private TimebarDialogOnUpdateCallback onUpdateCallback;
 
     public TimebarDialog(TimebarConfiguration configuration, TimebarDialogOnUpdateCallback onUpdateCallback) {
         super("Time Bar");
