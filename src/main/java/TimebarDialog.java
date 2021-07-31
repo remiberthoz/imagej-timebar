@@ -38,7 +38,7 @@ public class TimebarDialog extends GenericDialog {
         addChoice("Color: ", TimebarConfiguration.FCOLORS, configuration.fcolor);
         addChoice("Background: ", TimebarConfiguration.BCOLORS, configuration.bcolor);
         addChoice("Location: ", TimebarConfiguration.LOCATIONS, configuration.location);
-        addChoice("Format: ", TimebarConfiguration.TIME_FORMATS, configuration.timeFormat);
+        addChoice("Format: ", TimebarTimeFormat.getTimeFormatDescs(), TimebarTimeFormat.getTimeFormatDescs()[TimebarTimeFormat.getTimeFormatIndex(configuration.timeFormat)]);
         setInsets(10, 25, 0);
         addCheckboxGroup(2, 2, CHECKBOX_LABELS, new boolean[] {configuration.boldText, configuration.hideBar, configuration.serifFont, configuration.showUnits});
     }
@@ -78,7 +78,7 @@ public class TimebarDialog extends GenericDialog {
         c = (Choice) choice.elementAt(2);
         configuration.location = c.getSelectedItem();
         c = (Choice) choice.elementAt(3);
-        configuration.timeFormat = c.getSelectedItem();
+        configuration.timeFormat = TimebarTimeFormat.TIME_FORMATS.get(c.getSelectedIndex());
 
         Checkbox cb;
         cb = (Checkbox) checkbox.elementAt(0);

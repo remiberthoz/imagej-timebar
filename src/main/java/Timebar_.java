@@ -19,10 +19,6 @@ import ij.plugin.*;
 import ij.process.*;
 import ij.gui.*;
 import java.awt.*;
-import java.util.Date;
-import java.util.TimeZone;
-
-import java.text.SimpleDateFormat;
 
 public class Timebar_ implements PlugIn {
 
@@ -119,11 +115,11 @@ public class Timebar_ implements PlugIn {
         createOverlay(imp, allSlices);
     }
 
-    private String getTimeLabel(int t) {
+    private String getTimeLabel(int frame) {
         String calibrationTimeUnit = imp.getCalibration().getTimeUnit();
         long calibrationTimeInterval = (long) imp.getCalibration().frameInterval;
 
-        long factor = 1l;
+        long factor;
         switch(calibrationTimeUnit) {
             case "ms":
             case "milisecond":
@@ -134,85 +130,29 @@ public class Timebar_ implements PlugIn {
             case "sec":
             case "second":
             case "seconds":
-                factor = 1000l;
+                factor = 1000 * 1l;
                 break;
             case "m":
             case "min":
             case "minute":
             case "minutes":
-                factor = 1000l * 60l;
+                factor = 1000 * 60 * 1l;
                 break;
             case "h":
             case "hr":
             case "hrs":
             case "hour":
             case "hours":
-                factor = 1000l * 60l * 60l;
+                factor = 1000 * 60 * 60 * 1l;
                 break;
             default:
+                factor = 1l;
                 IJ.log("Timebar plugin: Unknown time unit."); // TODO: Actually raise and handle warning. Check resulting behaviour and tell user.
                 break;
         }
 
-        Date time = new Date((t-1) * calibrationTimeInterval * factor);
-
-        SimpleDateFormat formatterD = new SimpleDateFormat("D");
-        SimpleDateFormat formatterH = new SimpleDateFormat("HH");
-        SimpleDateFormat formatterM = new SimpleDateFormat("mm");
-        SimpleDateFormat formatterS = new SimpleDateFormat("ss");
-        SimpleDateFormat formatterm = new SimpleDateFormat("SSS");
-        formatterD.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatterH.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatterM.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatterS.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatterm.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String sD = formatterD.format(time);
-        Integer d = Integer.valueOf(sD);
-        d = d-1;
-        sD = String.valueOf(d);
-        String sH = formatterH.format(time);
-        String sM = formatterM.format(time);
-        String sS = formatterS.format(time);
-        String sm = formatterm.format(time);
-
-        final String DATE_SEPARATOR = "-";
-        final String TIME_SEPARATOR = ":";
-        final String UNITS_D = configuration.showUnits ? "d" : DATE_SEPARATOR;
-        final String UNITS_H = configuration.showUnits ? "h" : TIME_SEPARATOR;
-        final String UNITS_M = configuration.showUnits ? "m" : TIME_SEPARATOR;
-        final String UNITS_S = configuration.showUnits ? "s" : TIME_SEPARATOR;
-
-        String timeFormatted = "";
-        switch(configuration.timeFormat) {
-            case "D-HH:mm:ss.SSS":
-                timeFormatted = sD+UNITS_D + sH+UNITS_H + sM+UNITS_M + sS+"."+sm+UNITS_S;
-                break;
-            case "D-HH:mm:ss":
-                timeFormatted = sD+UNITS_D + sH+UNITS_H + sM+UNITS_M + sS+UNITS_S;
-                break;
-            case "D-HH:mm":
-                timeFormatted = sD+UNITS_D + sH+UNITS_H + sM+UNITS_M;
-                break;
-            case "HH:mm:ss.SSS":
-                timeFormatted = sH+UNITS_H + sM+UNITS_M + sS+"."+sm+UNITS_S;
-                break;
-            case "HH:mm:ss":
-                timeFormatted = sH+UNITS_H + sM+UNITS_M + sS+UNITS_S;
-                break;
-            case "HH:mm":
-                timeFormatted = sH+UNITS_H + sM+UNITS_M;
-                break;
-            case "mm:ss.SSS":
-                timeFormatted = sM+UNITS_M + sS+"."+sm+UNITS_S;
-                break;
-            case "mm:ss":
-                timeFormatted = sM+UNITS_M + sS+UNITS_S;
-                break;
-            case "ss.SSS":
-                timeFormatted = sS+"."+sm+UNITS_S;
-                break;
-        }
-        return timeFormatted;
+        long time = (frame-1) * calibrationTimeInterval * factor;
+        return configuration.timeFormat.formatMillis(time, configuration.showUnits);
     }
 
     private void measureLabelWidth() {
