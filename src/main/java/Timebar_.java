@@ -117,7 +117,7 @@ public class Timebar_ implements PlugIn {
 
     private String getTimeLabel(int frame) {
         String calibrationTimeUnit = imp.getCalibration().getTimeUnit();
-        long calibrationTimeInterval = (long) imp.getCalibration().frameInterval;
+        double calibrationTimeInterval = imp.getCalibration().frameInterval;
 
         long factor;
         switch(calibrationTimeUnit) {
@@ -151,7 +151,7 @@ public class Timebar_ implements PlugIn {
                 break;
         }
 
-        long time = (frame-1) * calibrationTimeInterval * factor;
+        long time = (long) ((frame-1) * calibrationTimeInterval * factor);
         return configuration.timeFormat.formatMillis(time, configuration.showUnits);
     }
 
