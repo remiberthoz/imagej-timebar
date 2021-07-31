@@ -20,14 +20,14 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.TextEvent;
 
-public class Timebar_Dialog extends GenericDialog {
+public class TimebarDialog extends GenericDialog {
 
     public static final String[] CHECKBOX_LABELS = {"Bold Text", "Hide Bar", "Serif Font", "Show units"};
 
-    Timebar_Configuration configuration;
-    Timebar_Dialog_OnUpdateCallback onUpdateCallback;
+    TimebarConfiguration configuration;
+    TimebarDialogOnUpdateCallback onUpdateCallback;
 
-    public Timebar_Dialog(Timebar_Configuration configuration, Timebar_Dialog_OnUpdateCallback onUpdateCallback) {
+    public TimebarDialog(TimebarConfiguration configuration, TimebarDialogOnUpdateCallback onUpdateCallback) {
         super("Time Bar");
 
         this.configuration = configuration;
@@ -35,10 +35,10 @@ public class Timebar_Dialog extends GenericDialog {
 
         addNumericField("Height in pixels: ", configuration.barHeightInPixels, 0);
         addNumericField("Font size: ", configuration.fontSize, 0);
-        addChoice("Color: ", Timebar_Configuration.FCOLORS, configuration.fcolor);
-        addChoice("Background: ", Timebar_Configuration.BCOLORS, configuration.bcolor);
-        addChoice("Location: ", Timebar_Configuration.LOCATIONS, configuration.location);
-        addChoice("Format: ", Timebar_Configuration.TIME_FORMATS, configuration.timeFormat);
+        addChoice("Color: ", TimebarConfiguration.FCOLORS, configuration.fcolor);
+        addChoice("Background: ", TimebarConfiguration.BCOLORS, configuration.bcolor);
+        addChoice("Location: ", TimebarConfiguration.LOCATIONS, configuration.location);
+        addChoice("Format: ", TimebarConfiguration.TIME_FORMATS, configuration.timeFormat);
         setInsets(10, 25, 0);
         addCheckboxGroup(2, 2, CHECKBOX_LABELS, new boolean[] {configuration.boldText, configuration.hideBar, configuration.serifFont, configuration.showUnits});
     }
@@ -91,7 +91,7 @@ public class Timebar_Dialog extends GenericDialog {
         configuration.showUnits = cb.getState();
     }
 
-    public Timebar_Configuration getConfiguration() {
+    public TimebarConfiguration getConfiguration() {
         return configuration;
     }
 }

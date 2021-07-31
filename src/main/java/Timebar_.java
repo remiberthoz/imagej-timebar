@@ -31,8 +31,8 @@ public class Timebar_ implements PlugIn {
     // default values for the non-static below. User choices are made static
     // only when the dialog is closed with validation (not when it is
     // canceled).
-    private static final Timebar_Configuration sConfiguration = new Timebar_Configuration();
-    private Timebar_Configuration configuration = new Timebar_Configuration(sConfiguration);
+    private static final TimebarConfiguration sConfiguration = new TimebarConfiguration();
+    private TimebarConfiguration configuration = new TimebarConfiguration(sConfiguration);
 
     private final static String TIME_BAR = "|TIME_BAR|";
     private int labelWidthInPixels;
@@ -87,12 +87,12 @@ public class Timebar_ implements PlugIn {
     private boolean askUserConfiguration(boolean roiExists) {
 
         // Reset the timebar location if it is set to AT_SELECTION but there is no ROI.
-        if (!roiExists && configuration.location == Timebar_Configuration.LOCATIONS[Timebar_Configuration.AT_SELECTION]) {
-            configuration.location = Timebar_Configuration.LOCATIONS[0];
+        if (!roiExists && configuration.location == TimebarConfiguration.LOCATIONS[TimebarConfiguration.AT_SELECTION]) {
+            configuration.location = TimebarConfiguration.LOCATIONS[0];
         }
 
-        Timebar_Dialog_OnUpdateCallback onUpdateCallback = new Timebar_Dialog_OnUpdateCallback() {public void onDialogUpdated() {updateTimebar(false);}};
-        Timebar_Dialog dialog = new Timebar_Dialog(configuration, onUpdateCallback);
+        TimebarDialogOnUpdateCallback onUpdateCallback = new TimebarDialogOnUpdateCallback() {public void onDialogUpdated() {updateTimebar(false);}};
+        TimebarDialog dialog = new TimebarDialog(configuration, onUpdateCallback);
         updateTimebar(false);  // Draw the preview timebar.
         dialog.showDialog();
         return dialog.wasOKed();
@@ -306,16 +306,16 @@ public class Timebar_ implements PlugIn {
 
         int x;
         int y;
-        if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.UPPER_RIGHT])) {
+        if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.UPPER_RIGHT])) {
             x = W - margin - labelWidthInPixels;
             y = margin;
-        } else if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.LOWER_RIGHT])) {
+        } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.LOWER_RIGHT])) {
             x = W - margin - labelWidthInPixels;
             y = H - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
-        } else if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.UPPER_LEFT])) {
+        } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.UPPER_LEFT])) {
             x = margin;
             y = margin;
-        } else if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.LOWER_LEFT])) {
+        } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.LOWER_LEFT])) {
             x = margin;
             y = H - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
         } else {
@@ -333,28 +333,28 @@ public class Timebar_ implements PlugIn {
 
     private Color getFColor() {
         Color c = Color.black;
-        if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[0])) c = Color.white;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[2])) c = Color.lightGray;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[3])) c = Color.gray;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[4])) c = Color.darkGray;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[5])) c = Color.red;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[6])) c = Color.green;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[7])) c = Color.blue;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[8])) c = Color.yellow;
+        if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[0])) c = Color.white;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[2])) c = Color.lightGray;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[3])) c = Color.gray;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[4])) c = Color.darkGray;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[5])) c = Color.red;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[6])) c = Color.green;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[7])) c = Color.blue;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[8])) c = Color.yellow;
        return c;
     }
 
     private Color getBColor() {
-        if (configuration.bcolor == null || configuration.bcolor.equals(Timebar_Configuration.BCOLORS[0])) return null;
+        if (configuration.bcolor == null || configuration.bcolor.equals(TimebarConfiguration.BCOLORS[0])) return null;
         Color bc = Color.white;
-        if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[1])) bc = Color.black;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[3])) bc = Color.darkGray;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[4])) bc = Color.gray;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[5])) bc = Color.lightGray;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[6])) bc = Color.yellow;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[7])) bc = Color.blue;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[8])) bc = Color.green;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[9])) bc = Color.red;
+        if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[1])) bc = Color.black;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[3])) bc = Color.darkGray;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[4])) bc = Color.gray;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[5])) bc = Color.lightGray;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[6])) bc = Color.yellow;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[7])) bc = Color.blue;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[8])) bc = Color.green;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[9])) bc = Color.red;
         return bc;
     }
 

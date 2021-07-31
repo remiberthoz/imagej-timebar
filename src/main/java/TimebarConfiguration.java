@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-public class Timebar_Configuration {
+public class TimebarConfiguration {
     
     // Define lists of choices in the menu.
     public static final String[] TIME_FORMATS = {"D-HH:mm:ss.SSS", "D-HH:mm:ss", "D-HH:mm", "HH:mm:ss.SSS", "HH:mm:ss", "HH:mm", "mm:ss.SSS", "mm:ss", "ss.SSS"};
@@ -34,7 +34,7 @@ public class Timebar_Configuration {
     public boolean showUnits;
     public int fontSize;
 
-    public Timebar_Configuration() {
+    public TimebarConfiguration() {
         this.barHeightInPixels = 14;
         this.timeFormat = TIME_FORMATS[0];
         this.location = LOCATIONS[UPPER_RIGHT];
@@ -47,11 +47,11 @@ public class Timebar_Configuration {
         this.fontSize = 14;
     }
 
-    public Timebar_Configuration(Timebar_Configuration model) {
+    public TimebarConfiguration(TimebarConfiguration model) {
         this.updateFrom(model);
     }
 
-    public void updateFrom(Timebar_Configuration model) {
+    public void updateFrom(TimebarConfiguration model) {
         this.barHeightInPixels = model.barHeightInPixels;
         this.timeFormat = model.timeFormat;
         this.location = model.location;
