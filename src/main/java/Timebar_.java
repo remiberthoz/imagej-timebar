@@ -96,7 +96,7 @@ public class Timebar_ implements PlugIn {
             configuration.location = TimebarConfiguration.LOCATIONS[0];
         }
 
-        TimebarDialogOnUpdateCallback onUpdateCallback = new TimebarDialogOnUpdateCallback() {public void onDialogUpdated() {updateTimebar(false);}};
+        TimebarDialogOnUpdateCallback onUpdateCallback = () -> updateTimebar(false);
         TimebarDialog dialog = new TimebarDialog(configuration, onUpdateCallback);
         updateTimebar(false);  // Draw the preview timebar.
         dialog.showDialog();
