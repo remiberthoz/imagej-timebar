@@ -50,12 +50,12 @@ public class Timebar_ implements PlugIn {
         boolean roiExists = getCurrentROI();
 
         boolean wasOKed = askUserConfiguration(roiExists);
-        if (wasOKed) {
-            persistConfiguration();
-            updateTimebar(true);
-        } else {
+        if (!wasOKed) {
             removeTimebar();
+            return;
         }
+        persistConfiguration();
+        updateTimebar(true);
     }
     
 
@@ -73,15 +73,14 @@ public class Timebar_ implements PlugIn {
     }
 
     private boolean getCurrentROI() {
-        boolean roiExists = false;
         Roi roi = imp.getRoi();
-        if (roi != null) {
-            Rectangle r = roi.getBounds();
-            roiX = r.x;
-            roiY = r.y;
-            roiExists = true;
+        if (roi == null) {
+            return false;
         }
-        return roiExists;
+        Rectangle r = roi.getBounds();
+        roiX = r.x;
+        roiY = r.y;
+        return true;
     }
 
 
