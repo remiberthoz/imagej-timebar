@@ -8,15 +8,15 @@ on:
 jobs:
   build_release:
     runs-on: ubuntu-latest
+    env:
+      IJ_DOWNLOAD_URL: https://downloads.imagej.net/fiji/latest/fiji-linux64.tar.gz
+      WIKI_USER: remiberthoz
+      UPDATE_PASS: this secret is stored in the _UPDATE_PASS environment variable
+      UPDATE_SITE: Timebar
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Java JDK 8
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '8'
-      - name: Build with Maven
+      - name: Build PlugIn with Maven
         run: mvn -B package
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
@@ -25,6 +25,10 @@ jobs:
             target/*[^sources].jar
           draft: yes
           fail_on_unmatched_files: yes
+      - name: Install ImageJ/Fiji
+        run: curl --silent ${IJ_DOWNLOAD_URL} | tar --extract --gzip
+      - name: Install PlugIn in ImageJ/Fiji (with Maven)
+        run: mvn -B install -Dscijava.app.directory=./Fiji.app
       - name: Release to ImageJ update site
         env:
           WIKI_USER: remiberthoz
@@ -36,10 +40,6 @@ jobs:
           IJ_LAUNCHER: ${{ env.IJ_PATH }}/ImageJ-linux64
           IJ_DOWNLOAD_URL: https://downloads.imagej.net/fiji/latest/fiji-linux64.tar.gz
         run: |
-          curl -s ${IJ_DOWNLOAD_URL} | tar --directory ${IJ_PARENT_PATH} --extract --gzip
-          mvn -B install -Dscijava.app.directory=${IJ_PATH} -Ddelete.other.versions=true
-          echo ${IJ_PATH}
-          echo ${IJ_LAUNCHER}
-          ${IJ_LAUNCHER} --update edit-update-site ${UPDATE_SITE} ${UPDATE_SITE_URL} "webdav:${WIKI_USER}:${_UPDATE_PASS}" .
-          ${IJ_LAUNCHER} --update update-force
-          ${IJ_LAUNCHER} --update upload-complete-site --force-shadow ${UPDATE_SITE}
+          ./Fiji.app/ImageJ-linux64 --headless --update edit-update-site ${UPDATE_SITE} https://sites.imagej.net/${UPDATE_SITE}/ "webdav:${WIKI_USER}:${_UPDATE_PASS}" .
+          ./Fiji.app/ImageJ-linux64 --headless --update update-force
+          ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force-shadow ${UPDATE_SITE}
