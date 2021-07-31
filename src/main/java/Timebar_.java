@@ -139,6 +139,10 @@ public class Timebar_ implements PlugIn {
             case "hour":
             case "hours":
                 factor = 1000l * 60l * 60l;
+                break;
+            default:
+                IJ.log("Timebar plugin: Unknown time unit."); // TODO: Actually raise and handle warning. Check resulting behaviour and tell user.
+                break;
         }
 
         Date time = new Date((t-1) * calibrationTimeInterval * factor);
