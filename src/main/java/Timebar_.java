@@ -39,8 +39,8 @@ public class Timebar_ implements PlugIn {
 
     // ImagePlus currently open in ImageJ, that we are working on.
     private ImagePlus imp;
-    private int W, H, D, T, Z, C;  // ImagePlus dimensions (width, height, bit depth, frames, slices, channels).
-    private int currentT, currentZ, currentC; // T, Z, and C for the image currently shown in the GUI.
+    private int imWidth, imHeight, imBitdepth, imFrames, imSlices, imChannels;  // ImagePlus dimensions (width, height, bit depth, frames, slices, channels).
+    private int currentFrame, currentSlice, currentChannel; // frame, slice and channel for the image currently shown in the GUI.
 
     private int xloc, yloc;
     private int roiX=-1, roiY;
@@ -61,15 +61,15 @@ public class Timebar_ implements PlugIn {
 
     private void getCurrentImage() {
         imp = IJ.getImage();
-        currentT = imp.getFrame();
-        currentZ = imp.getSlice();
-        currentC = imp.getChannel();
-        W = imp.getWidth();
-        H = imp.getHeight();
-        D = imp.getBitDepth();
-        T = imp.getNFrames();
-        Z = imp.getNSlices();
-        C = imp.getNChannels();
+        currentFrame = imp.getFrame();
+        currentSlice = imp.getSlice();
+        currentChannel = imp.getChannel();
+        imWidth = imp.getWidth();
+        imHeight = imp.getHeight();
+        imBitdepth = imp.getBitDepth();
+        imFrames = imp.getNFrames();
+        imSlices = imp.getNSlices();
+        imChannels = imp.getNChannels();
     }
 
     private boolean getCurrentROI() {
@@ -111,11 +111,11 @@ public class Timebar_ implements PlugIn {
     }
 
     private String getTimeLabel(int t) {
-        String time_unit = imp.getCalibration().getTimeUnit();
-        long t_interval = (long) imp.getCalibration().frameInterval;
+        String calibrationTimeUnit = imp.getCalibration().getTimeUnit();
+        long calibrationTimeInterval = (long) imp.getCalibration().frameInterval;
 
         long factor = 1l;
-        switch(time_unit) {
+        switch(calibrationTimeUnit) {
             case "ms":
             case "milisecond":
             case "miliseconds":
@@ -141,26 +141,26 @@ public class Timebar_ implements PlugIn {
                 factor = 1000l * 60l * 60l;
         }
 
-        Date time = new Date((t-1) * t_interval * factor);
+        Date time = new Date((t-1) * calibrationTimeInterval * factor);
 
-        SimpleDateFormat formatter_D = new SimpleDateFormat("D");
-        SimpleDateFormat formatter_H = new SimpleDateFormat("HH");
-        SimpleDateFormat formatter_M = new SimpleDateFormat("mm");
-        SimpleDateFormat formatter_S = new SimpleDateFormat("ss");
-        SimpleDateFormat formatter_m = new SimpleDateFormat("SSS");
-        formatter_D.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_H.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_M.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_S.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_m.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String D = formatter_D.format(time);
-        Integer d = Integer.valueOf(D);
+        SimpleDateFormat formatterD = new SimpleDateFormat("D");
+        SimpleDateFormat formatterH = new SimpleDateFormat("HH");
+        SimpleDateFormat formatterM = new SimpleDateFormat("mm");
+        SimpleDateFormat formatterS = new SimpleDateFormat("ss");
+        SimpleDateFormat formatterm = new SimpleDateFormat("SSS");
+        formatterD.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatterH.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatterM.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatterS.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatterm.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String sD = formatterD.format(time);
+        Integer d = Integer.valueOf(sD);
         d = d-1;
-        D = String.valueOf(d);
-        String H = formatter_H.format(time);
-        String M = formatter_M.format(time);
-        String S = formatter_S.format(time);
-        String m = formatter_m.format(time);
+        sD = String.valueOf(d);
+        String sH = formatterH.format(time);
+        String sM = formatterM.format(time);
+        String sS = formatterS.format(time);
+        String sm = formatterm.format(time);
 
         String DATE_SEPARATOR = "-";
         String TIME_SEPARATOR = ":";
@@ -172,31 +172,31 @@ public class Timebar_ implements PlugIn {
         String timeFormatted = "";
         switch(configuration.timeFormat) {
             case "D-HH:mm:ss.SSS":
-                timeFormatted = D+UNITS_D + H+UNITS_H + M+UNITS_M + S+"."+m+UNITS_S;
+                timeFormatted = sD+UNITS_D + sH+UNITS_H + sM+UNITS_M + sS+"."+sm+UNITS_S;
                 break;
             case "D-HH:mm:ss":
-                timeFormatted = D+UNITS_D + H+UNITS_H + M+UNITS_M + S+UNITS_S;
+                timeFormatted = sD+UNITS_D + sH+UNITS_H + sM+UNITS_M + sS+UNITS_S;
                 break;
             case "D-HH:mm":
-                timeFormatted = D+UNITS_D + H+UNITS_H + M+UNITS_M;
+                timeFormatted = sD+UNITS_D + sH+UNITS_H + sM+UNITS_M;
                 break;
             case "HH:mm:ss.SSS":
-                timeFormatted = H+UNITS_H + M+UNITS_M + S+"."+m+UNITS_S;
+                timeFormatted = sH+UNITS_H + sM+UNITS_M + sS+"."+sm+UNITS_S;
                 break;
             case "HH:mm:ss":
-                timeFormatted = H+UNITS_H + M+UNITS_M + S+UNITS_S;
+                timeFormatted = sH+UNITS_H + sM+UNITS_M + sS+UNITS_S;
                 break;
             case "HH:mm":
-                timeFormatted = H+UNITS_H + M+UNITS_M;
+                timeFormatted = sH+UNITS_H + sM+UNITS_M;
                 break;
             case "mm:ss.SSS":
-                timeFormatted = M+UNITS_M + S+"."+m+UNITS_S;
+                timeFormatted = sM+UNITS_M + sS+"."+sm+UNITS_S;
                 break;
             case "mm:ss":
-                timeFormatted = M+UNITS_M + S+UNITS_S;
+                timeFormatted = sM+UNITS_M + sS+UNITS_S;
                 break;
             case "ss.SSS":
-                timeFormatted = S+"."+m+UNITS_S;
+                timeFormatted = sS+"."+sm+UNITS_S;
                 break;
         }
         return timeFormatted;
@@ -206,8 +206,8 @@ public class Timebar_ implements PlugIn {
         int max = -1;
         ImageProcessor ip = imp.getProcessor();
         ip.setAntialiasedText(true);
-        for (int t = 1; t <= T; ++t) {
-            String timeLabel = getTimeLabel(t);
+        for (int f = 1; f <= imFrames; ++f) {
+            String timeLabel = getTimeLabel(f);
             int swidth = ip.getStringWidth(timeLabel);
             if (swidth > max) {
                 max = swidth;
@@ -261,40 +261,40 @@ public class Timebar_ implements PlugIn {
 
         if (allSlices) {
             // Draw labels
-            for (int c = 1; c <= C; ++c) {
-                for (int z = 1; z <= Z; ++z) {
-                    for (int t = 1; t <= T; ++t) {
-                        String timeLabel = getTimeLabel(t);
+            for (int c = 1; c <= imChannels; ++c) {
+                for (int s = 1; s <= imSlices; ++s) {
+                    for (int f = 1; f <= imFrames; ++f) {
+                        String timeLabel = getTimeLabel(f);
                         if (!configuration.hideBar) {
-                            Roi bar = new Roi(x, y, labelWidthInPixels*(t-1)/(T-1), configuration.barHeightInPixels);
+                            Roi bar = new Roi(x, y, labelWidthInPixels*(f-1)/(imFrames-1), configuration.barHeightInPixels);
                             bar.setFillColor(fcolor);
-                            bar.setPosition(c, z, t);
-                            bar.setPosition(imp.getStackIndex(c, z, t));
+                            bar.setPosition(c, s, f);
+                            bar.setPosition(imp.getStackIndex(c, s, f));
                             overlay.add(bar, TIME_BAR);
                         }
 
                         TextRoi text = new TextRoi(x, y + configuration.barHeightInPixels*(configuration.hideBar?0:1), timeLabel, font);
                         text.setStrokeColor(fcolor);
-                        text.setPosition(c, z, t);
-                        text.setPosition(imp.getStackIndex(c, z, t));
+                        text.setPosition(c, s, f);
+                        text.setPosition(imp.getStackIndex(c, s, f));
                         overlay.add(text, TIME_BAR);
                     }
                 }
             }
         } else {
-            String timeLabel = getTimeLabel(currentT);
+            String timeLabel = getTimeLabel(currentFrame);
             if (!configuration.hideBar) {
-                Roi bar = new Roi(x, y, labelWidthInPixels*(currentT-1)/(T-1), configuration.barHeightInPixels);
+                Roi bar = new Roi(x, y, labelWidthInPixels*(currentFrame-1)/(imFrames-1), configuration.barHeightInPixels);
                 bar.setFillColor(fcolor);
-                bar.setPosition(currentC, currentZ, currentT);
-                bar.setPosition(imp.getStackIndex(currentC, currentZ, currentT));
+                bar.setPosition(currentChannel, currentSlice, currentFrame);
+                bar.setPosition(imp.getStackIndex(currentChannel, currentSlice, currentFrame));
                 overlay.add(bar, TIME_BAR);
             }
 
             TextRoi text = new TextRoi(x, y + configuration.barHeightInPixels*(configuration.hideBar?0:1), timeLabel, font);
             text.setStrokeColor(fcolor);
-            text.setPosition(currentC, currentZ, currentT);
-            text.setPosition(imp.getStackIndex(currentC, currentZ, currentT));
+            text.setPosition(currentChannel, currentSlice, currentFrame);
+            text.setPosition(imp.getStackIndex(currentChannel, currentSlice, currentFrame));
             overlay.add(text, TIME_BAR);
         }
 
@@ -302,22 +302,22 @@ public class Timebar_ implements PlugIn {
     }
 
     private boolean updateLocation() {
-        int margin = (W + H) / 100;
+        int margin = (imWidth + imHeight) / 100;
 
         int x;
         int y;
         if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.UPPER_RIGHT])) {
-            x = W - margin - labelWidthInPixels;
+            x = imWidth - margin - labelWidthInPixels;
             y = margin;
         } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.LOWER_RIGHT])) {
-            x = W - margin - labelWidthInPixels;
-            y = H - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
+            x = imWidth - margin - labelWidthInPixels;
+            y = imHeight - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
         } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.UPPER_LEFT])) {
             x = margin;
             y = margin;
         } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.LOWER_LEFT])) {
             x = margin;
-            y = H - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
+            y = imHeight - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
         } else {
             if (roiX==-1) {
                 return false;
