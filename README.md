@@ -11,7 +11,7 @@ Here's a demo with the *Tracks for TrackMate* sample:
 The plugin's menu entry is next to the Scalebar entry: `Analyze > Tools > Time Bar...`. The configuration window that opens lets the user chose a few options:
 
 - [x] The progress bar can be disabled
-- [x] The time units can be replaced by symbols (ie: `D-HH:MM:ss.SSS`)
+- [x] The time units can be replaced by symbols (ie: `3-23:15:42.695` instead of `3d23h15m42.695s`)
 - [x] The time format can be modified (`D-HH:MM:ss.SSS` or `D-HH:MM` or `HH:MM:ss` or `ss.SSS` and many more!)
 
 And just like the scale bar :
