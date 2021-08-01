@@ -37,7 +37,7 @@ You can add this Plugin to your ImageJ/Fiji installation either by configuring a
 
 **Manual installation**: even-though the procedure is described with less steps, it requires more autonomy from your side. With this method, you can install any version of the plugin, but it will no be updated automatically by ImageJ.
 
-- Head on to the [Releases page](https://github.com/remiberthoz/imagej-timebar/releases) here on GitHub:.
+- Head on to the [Releases page](https://github.com/remiberthoz/imagej-timebar/releases) here on GitHub.
 - Download the `.jar` file for the latest version (or another one).
-- Copy this file into your ImageJ/Fiji plugins directory. This directory is located in your ImageJ/Fiji installation, but I cannot tell where it is as it depends on the systems.
+- Copy this file into your ImageJ/Fiji plugins directory. This directory is located in your ImageJ/Fiji installation, but I cannot tell where that is as it depends on the systems.
 - Restart ImageJ, and you're done.
