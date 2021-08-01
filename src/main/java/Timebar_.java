@@ -19,10 +19,6 @@ import ij.plugin.*;
 import ij.process.*;
 import ij.gui.*;
 import java.awt.*;
-import java.util.Date;
-import java.util.TimeZone;
-
-import java.text.SimpleDateFormat;
 
 public class Timebar_ implements PlugIn {
 
@@ -31,69 +27,77 @@ public class Timebar_ implements PlugIn {
     // default values for the non-static below. User choices are made static
     // only when the dialog is closed with validation (not when it is
     // canceled).
-    private static final Timebar_Configuration sConfiguration = new Timebar_Configuration();
-    private Timebar_Configuration configuration = new Timebar_Configuration(sConfiguration);
+    private static final TimebarConfiguration sConfiguration = new TimebarConfiguration();
+    private TimebarConfiguration configuration = new TimebarConfiguration(sConfiguration);
 
-    private final static String TIME_BAR = "|TIME_BAR|";
+    private static final String TIME_BAR = "|TIME_BAR|";
     private int labelWidthInPixels;
 
     // ImagePlus currently open in ImageJ, that we are working on.
     private ImagePlus imp;
-    private int W, H, D, T, Z, C;  // ImagePlus dimensions (width, height, bit depth, frames, slices, channels).
-    private int currentT, currentZ, currentC; // T, Z, and C for the image currently shown in the GUI.
+    // ImagePlus dimensions (width, height, bit depth, frames, slices, channels).
+    private int imWidth;
+    private int imHeight;
+    private int imFrames;
+    private int imSlices;
+    private int imChannels;  
+    // Frame, slice and channel for the image currently shown in the GUI.
+    private int currentFrame;
+    private int currentSlice;
+    private int currentChannel;
 
-    private int xloc, yloc;
-    private int roiX=-1, roiY;
+    private int xloc;
+    private int yloc;
+    private int roiX=-1;
+    private int roiY;
 
     public void run(String arg) {
         getCurrentImage();
         boolean roiExists = getCurrentROI();
 
         boolean wasOKed = askUserConfiguration(roiExists);
-        if (wasOKed) {
-            persistConfiguration();
-            updateTimebar(true);
-        } else {
+        if (!wasOKed) {
             removeTimebar();
+            return;
         }
+        persistConfiguration();
+        updateTimebar(true);
     }
     
 
     private void getCurrentImage() {
         imp = IJ.getImage();
-        currentT = imp.getFrame();
-        currentZ = imp.getSlice();
-        currentC = imp.getChannel();
-        W = imp.getWidth();
-        H = imp.getHeight();
-        D = imp.getBitDepth();
-        T = imp.getNFrames();
-        Z = imp.getNSlices();
-        C = imp.getNChannels();
+        currentFrame = imp.getFrame();
+        currentSlice = imp.getSlice();
+        currentChannel = imp.getChannel();
+        imWidth = imp.getWidth();
+        imHeight = imp.getHeight();
+        imFrames = imp.getNFrames();
+        imSlices = imp.getNSlices();
+        imChannels = imp.getNChannels();
     }
 
     private boolean getCurrentROI() {
-        boolean roiExists = false;
         Roi roi = imp.getRoi();
-        if (roi != null) {
-            Rectangle r = roi.getBounds();
-            roiX = r.x;
-            roiY = r.y;
-            roiExists = true;
+        if (roi == null) {
+            return false;
         }
-        return roiExists;
+        Rectangle r = roi.getBounds();
+        roiX = r.x;
+        roiY = r.y;
+        return true;
     }
 
 
     private boolean askUserConfiguration(boolean roiExists) {
 
         // Reset the timebar location if it is set to AT_SELECTION but there is no ROI.
-        if (!roiExists && configuration.location == Timebar_Configuration.LOCATIONS[Timebar_Configuration.AT_SELECTION]) {
-            configuration.location = Timebar_Configuration.LOCATIONS[0];
+        if (!roiExists && configuration.location == TimebarConfiguration.LOCATIONS[TimebarConfiguration.AT_SELECTION]) {
+            configuration.location = TimebarConfiguration.LOCATIONS[0];
         }
 
-        Timebar_Dialog_OnUpdateCallback onUpdateCallback = new Timebar_Dialog_OnUpdateCallback() {public void onDialogUpdated() {updateTimebar(false);}};
-        Timebar_Dialog dialog = new Timebar_Dialog(configuration, onUpdateCallback);
+        TimebarDialogOnUpdateCallback onUpdateCallback = () -> updateTimebar(false);
+        TimebarDialog dialog = new TimebarDialog(configuration, onUpdateCallback);
         updateTimebar(false);  // Draw the preview timebar.
         dialog.showDialog();
         return dialog.wasOKed();
@@ -111,12 +115,12 @@ public class Timebar_ implements PlugIn {
         createOverlay(imp, allSlices);
     }
 
-    private String getTimeLabel(int t) {
-        String time_unit = imp.getCalibration().getTimeUnit();
-        long t_interval = (long) imp.getCalibration().frameInterval;
+    private String getTimeLabel(int frame) {
+        String calibrationTimeUnit = imp.getCalibration().getTimeUnit();
+        double calibrationTimeInterval = imp.getCalibration().frameInterval;
 
-        long factor = 1l;
-        switch(time_unit) {
+        long factor;
+        switch(calibrationTimeUnit) {
             case "ms":
             case "milisecond":
             case "miliseconds":
@@ -126,89 +130,37 @@ public class Timebar_ implements PlugIn {
             case "sec":
             case "second":
             case "seconds":
-                factor = 1000l;
+                factor = 1000 * 1l;
                 break;
             case "m":
             case "min":
             case "minute":
             case "minutes":
-                factor = 1000l * 60l;
+                factor = 1000 * 60 * 1l;
                 break;
             case "h":
             case "hr":
             case "hrs":
             case "hour":
             case "hours":
-                factor = 1000l * 60l * 60l;
-        }
-
-        Date time = new Date((t-1) * t_interval * factor);
-
-        SimpleDateFormat formatter_D = new SimpleDateFormat("D");
-        SimpleDateFormat formatter_H = new SimpleDateFormat("HH");
-        SimpleDateFormat formatter_M = new SimpleDateFormat("mm");
-        SimpleDateFormat formatter_S = new SimpleDateFormat("ss");
-        SimpleDateFormat formatter_m = new SimpleDateFormat("SSS");
-        formatter_D.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_H.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_M.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_S.setTimeZone(TimeZone.getTimeZone("UTC"));
-        formatter_m.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String D = formatter_D.format(time);
-        Integer d = Integer.valueOf(D);
-        d = d-1;
-        D = String.valueOf(d);
-        String H = formatter_H.format(time);
-        String M = formatter_M.format(time);
-        String S = formatter_S.format(time);
-        String m = formatter_m.format(time);
-
-        String DATE_SEPARATOR = "-";
-        String TIME_SEPARATOR = ":";
-        String UNITS_D = configuration.showUnits ? "d" : DATE_SEPARATOR;
-        String UNITS_H = configuration.showUnits ? "h" : TIME_SEPARATOR;
-        String UNITS_M = configuration.showUnits ? "m" : TIME_SEPARATOR;
-        String UNITS_S = configuration.showUnits ? "s" : TIME_SEPARATOR;
-
-        String timeFormatted = "";
-        switch(configuration.timeFormat) {
-            case "D-HH:mm:ss.SSS":
-                timeFormatted = D+UNITS_D + H+UNITS_H + M+UNITS_M + S+"."+m+UNITS_S;
+                factor = 1000 * 60 * 60 * 1l;
                 break;
-            case "D-HH:mm:ss":
-                timeFormatted = D+UNITS_D + H+UNITS_H + M+UNITS_M + S+UNITS_S;
-                break;
-            case "D-HH:mm":
-                timeFormatted = D+UNITS_D + H+UNITS_H + M+UNITS_M;
-                break;
-            case "HH:mm:ss.SSS":
-                timeFormatted = H+UNITS_H + M+UNITS_M + S+"."+m+UNITS_S;
-                break;
-            case "HH:mm:ss":
-                timeFormatted = H+UNITS_H + M+UNITS_M + S+UNITS_S;
-                break;
-            case "HH:mm":
-                timeFormatted = H+UNITS_H + M+UNITS_M;
-                break;
-            case "mm:ss.SSS":
-                timeFormatted = M+UNITS_M + S+"."+m+UNITS_S;
-                break;
-            case "mm:ss":
-                timeFormatted = M+UNITS_M + S+UNITS_S;
-                break;
-            case "ss.SSS":
-                timeFormatted = S+"."+m+UNITS_S;
+            default:
+                factor = 1l;
+                IJ.log("Timebar plugin: Unknown time unit."); // TODO: Actually raise and handle warning. Check resulting behaviour and tell user.
                 break;
         }
-        return timeFormatted;
+
+        long time = (long) ((frame-1) * calibrationTimeInterval * factor);
+        return configuration.timeFormat.formatMillis(time, configuration.showUnits);
     }
 
     private void measureLabelWidth() {
         int max = -1;
         ImageProcessor ip = imp.getProcessor();
         ip.setAntialiasedText(true);
-        for (int t = 1; t <= T; ++t) {
-            String timeLabel = getTimeLabel(t);
+        for (int f = 1; f <= imFrames; ++f) {
+            String timeLabel = getTimeLabel(f);
             int swidth = ip.getStringWidth(timeLabel);
             if (swidth > max) {
                 max = swidth;
@@ -262,40 +214,40 @@ public class Timebar_ implements PlugIn {
 
         if (allSlices) {
             // Draw labels
-            for (int c = 1; c <= C; ++c) {
-                for (int z = 1; z <= Z; ++z) {
-                    for (int t = 1; t <= T; ++t) {
-                        String timeLabel = getTimeLabel(t);
+            for (int c = 1; c <= imChannels; ++c) {
+                for (int s = 1; s <= imSlices; ++s) {
+                    for (int f = 1; f <= imFrames; ++f) {
+                        String timeLabel = getTimeLabel(f);
                         if (!configuration.hideBar) {
-                            Roi bar = new Roi(x, y, labelWidthInPixels*(t-1)/(T-1), configuration.barHeightInPixels);
+                            Roi bar = new Roi(x, y, labelWidthInPixels*(f-1)/(imFrames-1), configuration.barHeightInPixels);
                             bar.setFillColor(fcolor);
-                            bar.setPosition(c, z, t);
-                            bar.setPosition(imp.getStackIndex(c, z, t));
+                            bar.setPosition(c, s, f);
+                            bar.setPosition(imp.getStackIndex(c, s, f));
                             overlay.add(bar, TIME_BAR);
                         }
 
                         TextRoi text = new TextRoi(x, y + configuration.barHeightInPixels*(configuration.hideBar?0:1), timeLabel, font);
                         text.setStrokeColor(fcolor);
-                        text.setPosition(c, z, t);
-                        text.setPosition(imp.getStackIndex(c, z, t));
+                        text.setPosition(c, s, f);
+                        text.setPosition(imp.getStackIndex(c, s, f));
                         overlay.add(text, TIME_BAR);
                     }
                 }
             }
         } else {
-            String timeLabel = getTimeLabel(currentT);
+            String timeLabel = getTimeLabel(currentFrame);
             if (!configuration.hideBar) {
-                Roi bar = new Roi(x, y, labelWidthInPixels*(currentT-1)/(T-1), configuration.barHeightInPixels);
+                Roi bar = new Roi(x, y, labelWidthInPixels*(currentFrame-1)/(imFrames-1), configuration.barHeightInPixels);
                 bar.setFillColor(fcolor);
-                bar.setPosition(currentC, currentZ, currentT);
-                bar.setPosition(imp.getStackIndex(currentC, currentZ, currentT));
+                bar.setPosition(currentChannel, currentSlice, currentFrame);
+                bar.setPosition(imp.getStackIndex(currentChannel, currentSlice, currentFrame));
                 overlay.add(bar, TIME_BAR);
             }
 
             TextRoi text = new TextRoi(x, y + configuration.barHeightInPixels*(configuration.hideBar?0:1), timeLabel, font);
             text.setStrokeColor(fcolor);
-            text.setPosition(currentC, currentZ, currentT);
-            text.setPosition(imp.getStackIndex(currentC, currentZ, currentT));
+            text.setPosition(currentChannel, currentSlice, currentFrame);
+            text.setPosition(imp.getStackIndex(currentChannel, currentSlice, currentFrame));
             overlay.add(text, TIME_BAR);
         }
 
@@ -303,22 +255,22 @@ public class Timebar_ implements PlugIn {
     }
 
     private boolean updateLocation() {
-        int margin = (W + H) / 100;
+        int margin = (imWidth + imHeight) / 100;
 
         int x;
         int y;
-        if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.UPPER_RIGHT])) {
-            x = W - margin - labelWidthInPixels;
+        if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.UPPER_RIGHT])) {
+            x = imWidth - margin - labelWidthInPixels;
             y = margin;
-        } else if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.LOWER_RIGHT])) {
-            x = W - margin - labelWidthInPixels;
-            y = H - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
-        } else if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.UPPER_LEFT])) {
+        } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.LOWER_RIGHT])) {
+            x = imWidth - margin - labelWidthInPixels;
+            y = imHeight - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
+        } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.UPPER_LEFT])) {
             x = margin;
             y = margin;
-        } else if (configuration.location.equals(Timebar_Configuration.LOCATIONS[Timebar_Configuration.LOWER_LEFT])) {
+        } else if (configuration.location.equals(TimebarConfiguration.LOCATIONS[TimebarConfiguration.LOWER_LEFT])) {
             x = margin;
-            y = H - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
+            y = imHeight - margin - configuration.barHeightInPixels*(configuration.hideBar?0:1) - configuration.fontSize;
         } else {
             if (roiX==-1) {
                 return false;
@@ -334,28 +286,28 @@ public class Timebar_ implements PlugIn {
 
     private Color getFColor() {
         Color c = Color.black;
-        if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[0])) c = Color.white;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[2])) c = Color.lightGray;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[3])) c = Color.gray;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[4])) c = Color.darkGray;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[5])) c = Color.red;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[6])) c = Color.green;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[7])) c = Color.blue;
-        else if (configuration.fcolor.equals(Timebar_Configuration.FCOLORS[8])) c = Color.yellow;
+        if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[0])) c = Color.white;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[2])) c = Color.lightGray;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[3])) c = Color.gray;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[4])) c = Color.darkGray;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[5])) c = Color.red;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[6])) c = Color.green;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[7])) c = Color.blue;
+        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[8])) c = Color.yellow;
        return c;
     }
 
     private Color getBColor() {
-        if (configuration.bcolor == null || configuration.bcolor.equals(Timebar_Configuration.BCOLORS[0])) return null;
+        if (configuration.bcolor == null || configuration.bcolor.equals(TimebarConfiguration.BCOLORS[0])) return null;
         Color bc = Color.white;
-        if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[1])) bc = Color.black;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[3])) bc = Color.darkGray;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[4])) bc = Color.gray;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[5])) bc = Color.lightGray;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[6])) bc = Color.yellow;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[7])) bc = Color.blue;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[8])) bc = Color.green;
-        else if (configuration.bcolor.equals(Timebar_Configuration.BCOLORS[9])) bc = Color.red;
+        if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[1])) bc = Color.black;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[3])) bc = Color.darkGray;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[4])) bc = Color.gray;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[5])) bc = Color.lightGray;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[6])) bc = Color.yellow;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[7])) bc = Color.blue;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[8])) bc = Color.green;
+        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[9])) bc = Color.red;
         return bc;
     }
 
