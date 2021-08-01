@@ -35,8 +35,8 @@ public class TimebarDialog extends GenericDialog {
 
         addNumericField("Height in pixels: ", configuration.barHeightInPixels, 0);
         addNumericField("Font size: ", configuration.fontSize, 0);
-        addChoice("Color: ", TimebarConfiguration.FCOLORS, configuration.fcolor);
-        addChoice("Background: ", TimebarConfiguration.BCOLORS, configuration.bcolor);
+        addChoice("Color: ", TimebarColor.getColorNames(false), TimebarColor.getColorNames(true)[TimebarColor.getColorIndex(configuration.fcolor)]);
+        addChoice("Background: ", TimebarColor.getColorNames(true), TimebarColor.getColorNames(true)[TimebarColor.getColorIndex(configuration.bcolor)]);
         addChoice("Location: ", TimebarConfiguration.LOCATIONS, configuration.location);
         addChoice("Format: ", TimebarTimeFormat.getTimeFormatDescs(), TimebarTimeFormat.getTimeFormatDescs()[TimebarTimeFormat.getTimeFormatIndex(configuration.timeFormat)]);
         setInsets(10, 25, 0);
@@ -72,9 +72,9 @@ public class TimebarDialog extends GenericDialog {
 
         Choice c;
         c = (Choice) choice.elementAt(0);
-        configuration.fcolor = c.getSelectedItem();
+        configuration.fcolor = TimebarColor.COLORS.get(c.getSelectedIndex());
         c = (Choice) choice.elementAt(1);
-        configuration.bcolor = c.getSelectedItem();
+        configuration.bcolor = TimebarColor.COLORS.get(c.getSelectedIndex());
         c = (Choice) choice.elementAt(2);
         configuration.location = c.getSelectedItem();
         c = (Choice) choice.elementAt(3);

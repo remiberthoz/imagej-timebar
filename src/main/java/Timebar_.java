@@ -183,10 +183,6 @@ public class Timebar_ implements PlugIn {
         int x = xloc;
         int y = yloc;
 
-        // Get colors
-        Color fcolor = getFColor();
-        Color bcolor = getBColor();
-
         // Set font
         int fontType = configuration.boldText ? 1 : 0;
         String face = configuration.serifFont ? "Serif" : "SansSerif";
@@ -196,7 +192,7 @@ public class Timebar_ implements PlugIn {
 
         // Draw background if needed
         int yoffset = configuration.barHeightInPixels*(configuration.hideBar?0:1) + (configuration.fontSize + configuration.fontSize/4);
-        if (bcolor != null) {
+        if (configuration.bcolor.color != null) {
             int w = labelWidthInPixels;
             int h = yoffset;
             if (w < labelWidthInPixels) {
@@ -208,7 +204,7 @@ public class Timebar_ implements PlugIn {
             w += margin * 2;
             h += margin * 2;
             Roi background = new Roi(x2, y2, w, h);
-            background.setFillColor(bcolor);
+            background.setFillColor(configuration.bcolor.color);
             overlay.add(background, TIME_BAR);
         }
 
@@ -220,14 +216,14 @@ public class Timebar_ implements PlugIn {
                         String timeLabel = getTimeLabel(f);
                         if (!configuration.hideBar) {
                             Roi bar = new Roi(x, y, labelWidthInPixels*(f-1)/(imFrames-1), configuration.barHeightInPixels);
-                            bar.setFillColor(fcolor);
+                            bar.setFillColor(configuration.fcolor.color);
                             bar.setPosition(c, s, f);
                             bar.setPosition(imp.getStackIndex(c, s, f));
                             overlay.add(bar, TIME_BAR);
                         }
 
                         TextRoi text = new TextRoi(x, y + configuration.barHeightInPixels*(configuration.hideBar?0:1), timeLabel, font);
-                        text.setStrokeColor(fcolor);
+                        text.setStrokeColor(configuration.fcolor.color);
                         text.setPosition(c, s, f);
                         text.setPosition(imp.getStackIndex(c, s, f));
                         overlay.add(text, TIME_BAR);
@@ -238,14 +234,14 @@ public class Timebar_ implements PlugIn {
             String timeLabel = getTimeLabel(currentFrame);
             if (!configuration.hideBar) {
                 Roi bar = new Roi(x, y, labelWidthInPixels*(currentFrame-1)/(imFrames-1), configuration.barHeightInPixels);
-                bar.setFillColor(fcolor);
+                bar.setFillColor(configuration.fcolor.color);
                 bar.setPosition(currentChannel, currentSlice, currentFrame);
                 bar.setPosition(imp.getStackIndex(currentChannel, currentSlice, currentFrame));
                 overlay.add(bar, TIME_BAR);
             }
 
             TextRoi text = new TextRoi(x, y + configuration.barHeightInPixels*(configuration.hideBar?0:1), timeLabel, font);
-            text.setStrokeColor(fcolor);
+            text.setStrokeColor(configuration.fcolor.color);
             text.setPosition(currentChannel, currentSlice, currentFrame);
             text.setPosition(imp.getStackIndex(currentChannel, currentSlice, currentFrame));
             overlay.add(text, TIME_BAR);
@@ -282,33 +278,6 @@ public class Timebar_ implements PlugIn {
         xloc = x;
         yloc = y;
         return true;
-    }
-
-    private Color getFColor() {
-        Color c = Color.black;
-        if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[0])) c = Color.white;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[2])) c = Color.lightGray;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[3])) c = Color.gray;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[4])) c = Color.darkGray;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[5])) c = Color.red;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[6])) c = Color.green;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[7])) c = Color.blue;
-        else if (configuration.fcolor.equals(TimebarConfiguration.FCOLORS[8])) c = Color.yellow;
-       return c;
-    }
-
-    private Color getBColor() {
-        if (configuration.bcolor == null || configuration.bcolor.equals(TimebarConfiguration.BCOLORS[0])) return null;
-        Color bc = Color.white;
-        if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[1])) bc = Color.black;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[3])) bc = Color.darkGray;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[4])) bc = Color.gray;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[5])) bc = Color.lightGray;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[6])) bc = Color.yellow;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[7])) bc = Color.blue;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[8])) bc = Color.green;
-        else if (configuration.bcolor.equals(TimebarConfiguration.BCOLORS[9])) bc = Color.red;
-        return bc;
     }
 
     private void updateFont() {

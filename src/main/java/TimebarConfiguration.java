@@ -18,14 +18,12 @@ public class TimebarConfiguration {
 
     protected static final String[] LOCATIONS = {"Upper Right", "Lower Right", "Lower Left", "Upper Left", "At Selection"};
     protected static final int UPPER_RIGHT=0, LOWER_RIGHT=1, LOWER_LEFT=2, UPPER_LEFT=3, AT_SELECTION=4;
-    protected static final String[] FCOLORS = {"White","Black","Light Gray","Gray","Dark Gray","Red","Green","Blue","Yellow"};
-    protected static final String[] BCOLORS = {"None","Black","White","Dark Gray","Gray","Light Gray","Yellow","Blue","Green","Red"};
 
     protected int barHeightInPixels;
     protected TimebarTimeFormat timeFormat;
     protected String location;
-    protected String fcolor;
-    protected String bcolor;
+    protected TimebarColor fcolor;
+    protected TimebarColor bcolor;
     protected boolean boldText;
     protected boolean serifFont;
     protected boolean hideBar;
@@ -36,8 +34,8 @@ public class TimebarConfiguration {
         this.barHeightInPixels = 14;
         this.timeFormat = TimebarTimeFormat.TIME_FORMATS.get(0);
         this.location = LOCATIONS[UPPER_RIGHT];
-        this.fcolor = FCOLORS[0];
-        this.bcolor = BCOLORS[0];
+        this.fcolor = TimebarColor.COLORS.get(7);  // TODO: Default value should not depend on the order colors are defined.
+        this.bcolor = TimebarColor.COLORS.get(9);
         this.boldText = true;
         this.serifFont = false;
         this.hideBar = false;
