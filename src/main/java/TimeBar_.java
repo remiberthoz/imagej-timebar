@@ -192,6 +192,8 @@ public class TimeBar_ implements PlugIn {
         String calibrationTimeUnit = imp.getCalibration().getTimeUnit();
         double calibrationTimeInterval = imp.getCalibration().frameInterval;
 
+		double effectiveFrame = frame + config.frameOffset;
+
         long factor;
         switch(calibrationTimeUnit) {
             case "ms":
@@ -225,7 +227,7 @@ public class TimeBar_ implements PlugIn {
                 break;
         }
 
-        long time = (long) ((frame-1) * calibrationTimeInterval * factor);
+        long time = (long) ((effectiveFrame - 1) * calibrationTimeInterval * factor);
 
 		String sign = "";
 		if (config.frameOffset < 0)
