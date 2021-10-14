@@ -35,4 +35,4 @@ jobs:
         run: mvn -B install -Dscijava.app.directory=./Fiji.app -Ddelete.other.versions=true -Dscijava.ignoreDependencies=true
       - name: Release to ImageJ update site
         run: |
-          ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force ${UPDATE_SITE}
+          ./Fiji.app/ImageJ-linux64 --headless --update update && ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force ${UPDATE_SITE}
