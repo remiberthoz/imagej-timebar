@@ -1,4 +1,5 @@
 import ij.gui.GenericDialog;
+import java.awt.Component;
 
 class TimeBarDialog extends GenericDialog {
 
@@ -8,6 +9,8 @@ class TimeBarDialog extends GenericDialog {
     TimeBarDialog(TimeBarConfiguration config) {
         super("Scale Bar");
 
+        addNumericField("Offset in frames: " , config.frameOffset, 0);
+        addMessage("First frame: " + 0);
         addNumericField("Thickness in pixels: ", config.barThicknessInPixels, 0);
         addNumericField("Font size: ", config.fontSize, 0);
         addChoice("Color: ", TimeBarColor.getColorNames(false), config.color.name);
