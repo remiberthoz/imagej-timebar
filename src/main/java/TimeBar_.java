@@ -226,7 +226,17 @@ public class TimeBar_ implements PlugIn {
         }
 
         long time = (long) ((frame-1) * calibrationTimeInterval * factor);
-        return config.timeFormat.formatMillis(time, config.showUnits);
+
+		String sign = "";
+		if (config.frameOffset < 0)
+			sign = "+";
+		
+		if (time < 0) {
+			time = Math.abs(time);
+			sign = "-";
+		}
+		
+        return sign + config.timeFormat.formatMillis(time, config.showUnits);
 	}
 
 	/**
