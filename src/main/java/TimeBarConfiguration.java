@@ -2,7 +2,7 @@ class TimeBarConfiguration {
 
     private static int defaultBarHeight = 4;
 
-    boolean showHorizontal;
+    double frameOffset;
     int barThicknessInPixels;
     TimeBarLocation location;
     TimeBarColor color;
@@ -16,7 +16,7 @@ class TimeBarConfiguration {
     int fontSize;
 
     TimeBarConfiguration() {
-        this.showHorizontal = true;
+        this.frameOffset = 0;
         this.barThicknessInPixels = defaultBarHeight;
         this.location = TimeBarLocation.LOCATIONS.get(0);  // TODO: Default value should not depend on the values are defined.
         this.color = TimeBarColor.COLORS.get(7);
@@ -35,7 +35,7 @@ class TimeBarConfiguration {
     }
     
     void updateFrom(TimeBarConfiguration model) {
-        this.showHorizontal = model.showHorizontal;
+        this.frameOffset = model.frameOffset;
         this.barThicknessInPixels = model.barThicknessInPixels;
         this.location = model.location;
         this.color = model.color;

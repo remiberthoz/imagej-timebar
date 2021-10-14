@@ -13,7 +13,7 @@ The plugin's menu entry is next to the Scalebar entry: `Analyze > Tools > Time B
 - [x] The progress bar can be disabled
 - [x] The time units can be replaced by symbols (ie: `3-23:15:42.695` instead of `3d23h15m42.695s`)
 - [x] The time format can be modified (`D-HH:MM:ss.SSS` or `D-HH:MM` or `HH:MM:ss` or `ss.SSS` and many more!)
-- [ ] The time can be offset, such that the first frame displays a non-zero timecode (positive or negative)
+- [x] The time can be offset, such that the first frame displays a non-zero timecode (positive or negative)
 
 And just like the scale bar :
 

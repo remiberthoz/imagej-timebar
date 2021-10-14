@@ -1,6 +1,7 @@
 import ij.gui.GenericDialog;
 import ij.gui.DialogListener;
 import java.awt.AWTEvent;
+import java.awt.Label;
 
 class TimeBarDialogListener implements DialogListener {
 
@@ -15,6 +16,7 @@ class TimeBarDialogListener implements DialogListener {
 
     @Override
     public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
+        config.frameOffset = gd.getNextNumber();
         config.barThicknessInPixels = (int) gd.getNextNumber();
         config.fontSize = (int) gd.getNextNumber();
         config.color = TimeBarColor.COLORS.get(gd.getNextChoiceIndex());
@@ -27,6 +29,7 @@ class TimeBarDialogListener implements DialogListener {
         config.useOverlay = gd.getNextBoolean();
         config.showUnits = gd.getNextBoolean();
 
+        ((Label) gd.getMessage()).setText("First frame: " + plugin.getTimeLabel(1));
         plugin.updateTimeBar(true);
 
         return true;
