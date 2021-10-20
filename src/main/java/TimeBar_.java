@@ -398,8 +398,10 @@ public class TimeBar_ implements PlugIn {
 
                     if (config.useOverlay) {
                         for (Roi roi : scaleBarOverlay) {
-                            roi.setPosition(c, s, f);
-                            roi.setPosition(imp.getStackIndex(c, s, f));
+							if (imp.isHyperStack())
+								roi.setPosition(c, s, f);
+							else
+								roi.setPosition(imp.getStackIndex(c, s, f));
                             impOverlay.add(roi);
                         }
                         imp.setOverlay(impOverlay);
