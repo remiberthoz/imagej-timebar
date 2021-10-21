@@ -1,12 +1,12 @@
 import ij.gui.GenericDialog;
-import java.awt.Component;
+import java.awt.Label;
 
 class TimeBarDialog extends GenericDialog {
 
     static final String[] checkboxLabels = {"Bold Text", "Hide bar", "Serif Font", "Overlay", "Show units"};
     boolean[] checkboxStates = new boolean[5];
 
-    TimeBarDialog(TimeBarConfiguration config) {
+    TimeBarDialog(TimeBarConfiguration config, TimeBar_ plugin) {
         super("Scale Bar");
 
         addNumericField("Offset in frames: " , config.frameOffset, 0);
@@ -22,5 +22,7 @@ class TimeBarDialog extends GenericDialog {
         checkboxStates[4] = config.showUnits;
         setInsets(10, 25, 0);
         addCheckboxGroup(3, 2, checkboxLabels, checkboxStates);
+
+        ((Label) this.getMessage()).setText("First frame: " + plugin.getTimeLabel(1));
     }
 }
