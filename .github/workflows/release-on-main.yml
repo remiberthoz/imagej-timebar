@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Get tag annotation for jgitver Maven plugin
+        run: git fetch --tags --force
       - name: Build PlugIn with Maven
         run: mvn -B package
       - name: Release to GitHub
