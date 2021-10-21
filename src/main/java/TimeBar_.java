@@ -129,7 +129,7 @@ public class TimeBar_ implements PlugIn {
 		updateTimeBar(true);
 		
 		// Create & show the dialog, then return.
-		GenericDialog dialog = new TimeBarDialog(config);
+		GenericDialog dialog = new TimeBarDialog(config, this);
 		DialogListener dialogListener = new TimeBarDialogListener(config, this);
 		dialog.addDialogListener(dialogListener);
 		dialog.showDialog();

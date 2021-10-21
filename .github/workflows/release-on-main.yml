@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Get tag annotation for jgitver Maven plugin
+        run: git fetch --tags --force
       - name: Build PlugIn with Maven
         run: mvn -B package
       - name: Release to GitHub
@@ -34,5 +36,6 @@ jobs:
       - name: Install PlugIn in ImageJ/Fiji (with Maven)
         run: mvn -B install -Dscijava.app.directory=./Fiji.app -Ddelete.other.versions=true -Dscijava.ignoreDependencies=true
       - name: Release to ImageJ update site
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           ./Fiji.app/ImageJ-linux64 --headless --update update && ./Fiji.app/ImageJ-linux64 --headless --update upload-complete-site --force ${UPDATE_SITE}
