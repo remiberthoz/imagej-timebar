@@ -45,12 +45,17 @@ public class TimeBar_ implements PlugIn {
             IJ.noImage();
             return;
         }
-        // Snapshot before anything, so we can revert if the user cancels the action.
-        imp.getProcessor().snapshot();
 
         // Get time info about image/
         nFrames = imp.getNFrames();
         currentFrame = imp.getFrame();
+		if (nFrames <= 1) {
+			IJ.error("Timebar", "This plugin works on stacks with multiple frames (see your stack dimensions in 'Image > Properties...')");
+			return;
+		}
+
+        // Snapshot before anything, so we can revert if the user cancels the action.
+        imp.getProcessor().snapshot();
 
         userRoiExists = parseCurrentROI();
         boolean userOKed = askUserConfiguration(userRoiExists);
