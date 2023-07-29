@@ -7,7 +7,7 @@ class TimeBarDialog extends GenericDialog {
     boolean[] checkboxStates = new boolean[5];
 
     TimeBarDialog(TimeBarConfiguration config, TimeBar_ plugin) {
-        super("Scale Bar");
+        super("Time Bar");
 
         addNumericField("Offset in frames: " , config.frameOffset, 0);
         addMessage(
