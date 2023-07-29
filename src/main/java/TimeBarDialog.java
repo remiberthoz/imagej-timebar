@@ -14,6 +14,8 @@ class TimeBarDialog extends GenericDialog {
             "First frame: " + 0 + "\n" +
             "Last frame: " + 0
             );
+        addCheckbox("Use pre-defined timestamps instead of frame interval", config.usePredefinedTimestamps);
+        addStringField("Pre-defined", config.predefinedTimestamps);
         addNumericField("Thickness in pixels: ", config.barThicknessInPixels, 0);
         addNumericField("Font size: ", config.fontSize, 0);
         addChoice("Color: ", TimeBarColor.getColorNames(false), config.color.name);
