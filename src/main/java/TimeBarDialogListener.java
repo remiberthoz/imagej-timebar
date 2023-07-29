@@ -1,7 +1,7 @@
 import ij.gui.GenericDialog;
+import ij.gui.MultiLineLabel;
 import ij.gui.DialogListener;
 import java.awt.AWTEvent;
-import java.awt.Label;
 
 class TimeBarDialogListener implements DialogListener {
 
@@ -29,7 +29,9 @@ class TimeBarDialogListener implements DialogListener {
         config.useOverlay = gd.getNextBoolean();
         config.showUnits = gd.getNextBoolean();
 
-        ((Label) gd.getMessage()).setText("First frame: " + plugin.getTimeLabel(1));
+        ((MultiLineLabel) gd.getMessage()).setText(
+            "First frame: " + plugin.getTimeLabel(1) + "\n" +
+            "Last frame: " + plugin.getTimeLabel(plugin.nFrames));
         plugin.updateTimeBar(true);
 
         return true;

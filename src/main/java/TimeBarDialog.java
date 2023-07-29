@@ -1,5 +1,5 @@
 import ij.gui.GenericDialog;
-import java.awt.Label;
+import ij.gui.MultiLineLabel;
 
 class TimeBarDialog extends GenericDialog {
 
@@ -10,7 +10,10 @@ class TimeBarDialog extends GenericDialog {
         super("Scale Bar");
 
         addNumericField("Offset in frames: " , config.frameOffset, 0);
-        addMessage("First frame: " + 0);
+        addMessage(
+            "First frame: " + 0 + "\n" +
+            "Last frame: " + 0
+            );
         addNumericField("Thickness in pixels: ", config.barThicknessInPixels, 0);
         addNumericField("Font size: ", config.fontSize, 0);
         addChoice("Color: ", TimeBarColor.getColorNames(false), config.color.name);
@@ -23,6 +26,8 @@ class TimeBarDialog extends GenericDialog {
         setInsets(10, 25, 0);
         addCheckboxGroup(3, 2, checkboxLabels, checkboxStates);
 
-        ((Label) this.getMessage()).setText("First frame: " + plugin.getTimeLabel(1));
+        ((MultiLineLabel) this.getMessage()).setText(
+            "First frame: " + plugin.getTimeLabel(1) + "\n" +
+            "Last frame: " + plugin.getTimeLabel(plugin.nFrames));
     }
 }
