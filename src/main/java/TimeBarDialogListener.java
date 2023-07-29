@@ -1,7 +1,7 @@
 import ij.gui.GenericDialog;
+import ij.gui.MultiLineLabel;
 import ij.gui.DialogListener;
 import java.awt.AWTEvent;
-import java.awt.Label;
 
 class TimeBarDialogListener implements DialogListener {
 
@@ -17,6 +17,8 @@ class TimeBarDialogListener implements DialogListener {
     @Override
     public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
         config.frameOffset = gd.getNextNumber();
+        config.usePredefinedTimestamps = gd.getNextBoolean();
+        config.predefinedTimestamps = gd.getNextString();
         config.barThicknessInPixels = (int) gd.getNextNumber();
         config.fontSize = (int) gd.getNextNumber();
         config.color = TimeBarColor.COLORS.get(gd.getNextChoiceIndex());
@@ -29,7 +31,19 @@ class TimeBarDialogListener implements DialogListener {
         config.useOverlay = gd.getNextBoolean();
         config.showUnits = gd.getNextBoolean();
 
-        ((Label) gd.getMessage()).setText("First frame: " + plugin.getTimeLabel(1));
+        if (config.usePredefinedTimestamps) {
+            String[] timestamps = config.predefinedTimestamps.split(",");
+            if (timestamps.length != plugin.nFrames) {
+                ((MultiLineLabel) gd.getMessage()).setText(
+                    "First frame: INVALID PRE-DEFINED\n" +
+                    "Last frame: INVALID PRE-DEFINED");
+            }
+        }
+
+        ((MultiLineLabel) gd.getMessage()).setText(
+            "First frame: " + plugin.getTimeLabel(1) + "\n" +
+            "Last frame: " + plugin.getTimeLabel(plugin.nFrames));
+
         plugin.updateTimeBar(true);
 
         return true;

@@ -157,6 +157,7 @@ public class TimeBar_ implements PlugIn {
 	 * Create & draw the scalebar using an Overlay.
 	 */
 	Overlay createTimeBarOverlay(int frame) throws MissingRoiException {
+		// TODO: When using predefined timestamps, the timebar progression is likely not linear we should handle this situation
 		Overlay overlay = new Overlay();
 
 		Color color = config.color.color;
@@ -194,6 +195,20 @@ public class TimeBar_ implements PlugIn {
      * and using the format in the current configuration..
 	 */
 	String getTimeLabel(int frame) {
+		if (config.usePredefinedTimestamps)
+			return getTimeLabelFromPredefined(frame);
+
+		return getTimeLabelFromFrameInterval(frame);
+	}
+
+	String getTimeLabelFromPredefined(int frame) {
+		String[] timestamps = config.predefinedTimestamps.split(",");
+		if (timestamps.length != nFrames)
+			return "invalid";
+		return timestamps[frame-1];
+	}
+
+	String getTimeLabelFromFrameInterval(int frame) {
         String calibrationTimeUnit = imp.getCalibration().getTimeUnit();
         double calibrationTimeInterval = imp.getCalibration().frameInterval;
 
